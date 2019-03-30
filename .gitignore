@@ -1,3 +1,4 @@
 node_modules/
 bookshop-server/img
 bookshop-server/scraper/img
+*.key

@@ -18,13 +18,41 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
+//User.token()
 
-
-app.post('/register',re)
-User.register({email:"awssd",password:"dsa",name:"skrr"}).then(res=>{
-    console.log("SKRRRR")
-
+app.get("/token",(req,res)=>{
+    User.token()
+    res.sendStatus(200)
 })
+
+app.post('/register',(req,res)=>{
+    User.register(req.body).then(dbRes=>{
+        res.send(dbRes)
+    }).catch(error=>{
+        console.log(error)
+        if(error.code && error.code=="ER_DUP_ENTRY")
+            res.sendStatus(409)
+        else
+            res.sendStatus(500)
+    })
+})
+
+app.post('/login',(req,res)=>{
+    User.login(req.body).then(token=>{
+        res.send({token})
+    }).catch(err=>{
+        res.status(401).send(err.message)
+    })
+})
+
+app.get('/getSelfData',(req,res)=>{//test Protected Route
+
+   let token=req.headers.authorization.split(' ')[1]
+   
+   res.send(User.userData({token}))
+})
+
+
 
 
 
