@@ -52,7 +52,7 @@ class Product {
         var args = []
         
 
-        console.log(authors)
+        //console.log(authors)
         var queryWithProduct = "SELECT  a.id,p.id as product_id, p.name, p.price, p.quantity, p.image, a.publisher, a.description, a.pages, a.ISBN, a.year, GROUP_CONCAT(DISTINCT c.name ORDER BY c.name) Authors, GROUP_CONCAT(g.name ORDER BY g.name SEPARATOR ';') Genres FROM Books a LEFT JOIN Products p ON a.product_id=p.id LEFT JOIN Book_Author b ON a.id = b.book_id  LEFT JOIN Authors c ON b.author_id = c.id LEFT JOIN Book_Genre bg ON a.id=bg.book_id LEFT JOIN Genr"
         var query = `
             SELECT  a.id,p.id as product_id, p.name, p.price, p.quantity, p.image, a.publisher, a.description, a.pages, a.ISBN, a.year, GROUP_CONCAT(DISTINCT c.name ORDER BY c.name SEPARATOR ';') Authors, GROUP_CONCAT(DISTINCT g.name ORDER BY g.name SEPARATOR ';') Genres 
@@ -76,7 +76,7 @@ class Product {
             args = args.concat(authors)
             query += ")) "
         }
-        console.log(args)
+        //console.log(args)
         query += "GROUP BY a.id"
         return new Promise((resolve, rej) => {
             queryPromise(query, args) .then(res => {

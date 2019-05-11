@@ -1,10 +1,10 @@
 <template>
-<div class="container">   
-  <div class=" columns is-multiline is-mobile">
+<div class="">   
+  <div class=" columns is-multiline">
 
 
     
-    <div v-on:click="displayProduct(index)" v-for="(book,index) in books" :key="book.id" class="card column is-3">
+    <div v-on:click="displayProduct(index)" v-for="(book,index) in products" :key="book.id" class="card column is-3">
       <div class="card-image">
         <figure class="image is-2by2">
           <img :src="api+'/img/'+book.image" alt="Placeholder image">
@@ -30,7 +30,7 @@
 
 
      </div>
-  <product-view @hideProduct="hideProduct" :showProp="showModal" :product="productToShow"/>
+  <!-- <product-view @hideProduct="hideProduct" :showProp="showModal"/> -->
   </div>
 </template>
 
@@ -38,6 +38,8 @@
 import productService from "../services/productService.js"
 import config from "../../config.js"
 import ProductView from "./ProductView.vue"
+import { mapMutations, mapState } from 'vuex';
+import router from '../router';
 
 export default {
   name: "Products",
@@ -53,7 +55,7 @@ export default {
 
       }
   },
-  props: ['filter'],
+  computed:mapState(['products']),
   created(){
       this.fetchBooks()
   },
@@ -65,17 +67,19 @@ export default {
     }
   },
   methods:{
-      fetchBooks(filter={authors:[],genres:[]}){
-        console.log(filter.genres[0])
-          productService.getBooks(filter.authors,filter.genres)
-          .then(res=>{
-            console.log(res.data)
-            this.books=res.data
-          })
-      },
+    ...mapMutations(['setCurrentProduct','fetchBooks']),
+      // fetchBooks(filter={authors:[],genres:[]}){
+      //   console.log(filter.genres[0])
+      //     productService.getBooks(filter.authors,filter.genres)
+      //     .then(res=>{
+      //       console.log(res.data)
+      //       this.books=res.data
+      //     })
+      // },
       displayProduct(index){
-        this.productToShow=this.books[index]
-        this.showModal=true;
+        router.push('product/'+index)
+        //this.setCurrentProduct(this.products[index])
+        //this.showModal=true;
       },
       hideProduct(){
         this.showModal=false;

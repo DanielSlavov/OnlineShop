@@ -37,11 +37,10 @@ class User {
         return bcrypt.hash(password,1).then(res => {
             hashedPassword = res
 
-            
-            let token = jwt.sign({name:"skr",email:"email"},privateKey,signOptions_default)
-            
             return queryPromise("INSERT INTO Users(email,password,name) VALUES (?,?,?)",[email, hashedPassword, name])
             .then(res=>{
+                res.insertId
+                let token = jwt.sign({id:res.insertId,email:email,name:name},privateKey,signOptions_default)
                 return {token}
             })
         })
@@ -51,9 +50,10 @@ class User {
         .then(dbRes=>{
             let userId=dbRes[0].id
             let userEmail=dbRes[0].email
+            let userName=dbRes[0].name
             let hashed=dbRes[0].password
             if(bcrypt.compareSync(password,hashed)){
-                return jwt.sign({id:userId,email:userEmail},privateKey,signOptions_default)
+                return jwt.sign({id:userId,email:userEmail,name:userName},privateKey,signOptions_default)
             }else{
                 throw Error("wrong credentials")
             }
@@ -61,8 +61,19 @@ class User {
     }
 
     static userData({token=isRequired()}){
-        let payload=jwt.verify(token,publicKey);
+        let payload;
+        try{
+            payload=jwt.verify(token,publicKey)
+        }
+        catch(err){
+            console.log(err.message)
+        }
         return payload
+    }
+    
+    static checkEmail(email){
+        
+        return queryPromise("SELECT id FROM Users WHERE email=?",[email])
     }
 
 }

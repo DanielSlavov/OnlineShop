@@ -52,6 +52,13 @@ app.get('/getSelfData',(req,res)=>{//test Protected Route
    res.send(User.userData({token}))
 })
 
+app.get('/checkEmail',(req,res)=>{
+    User.checkEmail(req.query.email)
+    .then(dbres=>{
+        res.send({"exists":dbres.length})
+    })
+})
+
 
 
 
@@ -95,10 +102,10 @@ app.get('/getBook', (req, res) => {
     })
 })
 app.get('/getBooks', (req, res) => {
-    console.log(req.query.authors)
+    //console.log(req.query.authors)
     Product.getBooks(false, false, req.query.genres, req.query.authors)
         .then(dbRes => {
-            console.log(dbRes)
+            //console.log(dbRes)
             res.send(dbRes)
         })
 })
@@ -108,6 +115,7 @@ app.get('/getGenres', (req, res) => {
             res.send(dbRes)
         })
 })
+
 
 //end using
 

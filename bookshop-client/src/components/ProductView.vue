@@ -1,8 +1,5 @@
-<template>
-  <div
-    v-if="showProp"
-    class="modal is-active"
-  >
+<template >
+  <div  class="modal is-active">
     <div
       v-on:click.stop="closeModal"
       class="modal-background"
@@ -11,20 +8,20 @@
       <div class="column is-4 ">
         <figure class="image">
           <img
-            :src="api+'/img/'+product.image"
+            :src="api+'/img/'+currentProduct.image"
             alt="Placeholder image"
           >
         </figure>
       </div>
       <div class="content column is-6 is-offset-1">
-        <strong>{{product.name}}</strong><br>
+        <strong>{{currentProduct.name}}</strong><br>
         <p
-          v-for="(author,index) in product.Authors"
+          v-for="(author,index) in currentProduct.Authors"
           :key="index"
         >{{author}}</p>
 
-        <strong id="price">{{product.price}}.00лв</strong>   
-        <span id="cart" class="icon has-text-info"><a class="button is-link"><i class="fas fa-cart-plus"></i>КУПИ</a></span>
+        <strong id="price">{{currentProduct.price}}.00лв</strong>   
+        <span id="cart" class="icon has-text-info"><a @click="addToCart(currentProduct)"    class="button is-link"><i class="fas fa-cart-plus"></i>КУПИ</a></span>
         
         <br>
         <br>
@@ -33,7 +30,7 @@
         <br>
         <br>
 
-        {{product.description}}
+        {{currentProduct.description}}
       </div>
 
     </div>
@@ -47,25 +44,39 @@
 
 <script>
 import config from "../../config.js";
+import {mapMutations} from 'vuex'
+import {mapState }from 'vuex'
+// import router from "../router"
+
 export default {
   name: "ProductView",
   data() {
     return {
-      api: config.API_URL
+      api: config.API_URL,
+      currentProduct:{}
     };
   },
-  props: ["product", "showProp"],
+  computed:mapState(['products']),
+  props: ["id",],
   methods: {
-    closeModal() {
-      this.$emit("hideProduct");
+    ...mapMutations(['addToCart','removeCurrentProduct']),
+    closeModal(){
+      window.history.back()
     }
   },
+
   created() {
+    console.log(this.id)
+    this.currentProduct=this.products[this.id]
+    //console.log(this.products)
+    
+    
     window.addEventListener("keydown", e => {
       if (e.key == "Escape") {
-        this.closeModal();
+       console.log(this.currentProduct)
+        window.history.back();
       }
-    });
+    }, {once : true});
   }
 };
 </script>
