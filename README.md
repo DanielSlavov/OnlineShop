@@ -1,5 +1,5 @@
-# BookShop
-A simple and lightweight online shop for books and other items
+# OnlineShop
+A simple and lightweight online shop.
 
 Included web scraper for obtaining test content
 
